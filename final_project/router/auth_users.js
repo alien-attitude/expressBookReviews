@@ -22,17 +22,17 @@ const isValid = (username) => {
 
 // Checks if user exits and password matches
 const authenticatedUser = (username, password)=>{
-  // Filter user array for any user with the same username and password
-  let validUser = users.filter((user) => {
-    return (user.username === username && user.password === password);
-  });
+    // Filter user array for any user with the same username and password
+    let validUser = users.filter((user) => {
+        return (user.username === username && user.password === password);
+    });
 
-  //Return true if any user is found valid, otherwise
-  if (validUser.length > 0) {
-    return true;
-  } else {
-    return false;
-  }
+    //Return true if any user is found valid, otherwise
+    if (validUser.length > 0) {
+        return true;
+    } else {
+        return false;
+    }
 }
 
 // Login endpoint - /customer/login
@@ -65,8 +65,33 @@ regd_users.post("/login", (req,res) => {
 
 // Add a book review
 regd_users.put("/auth/review/:isbn", (req, res) => {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+  const isbn = req.params.isbn;
+  const review = req.query.review;
+
+  if(!review){
+    return res.status(400).json({message: "Review is missing"});
+  }
+
+  // Get the username from the JWT payload stored in the session
+  const username = req.user && req.user.username
+
+  if(!username) {
+    return res.status(401).json({message: "User not authenticated"});
+  }
+
+  // Make sure the book exists
+  const book = books[isbn];
+  if(!book) {
+    return res.status(404).json({message: "Book not found"});
+  }
+
+  //Update the review for the user
+  book.reviews[username] = review;
+
+  return res.status(200).json({
+    message: "Review was successfully logged in",
+  review: book.reviews
+  });
 });
 
 module.exports.authenticated = regd_users;
