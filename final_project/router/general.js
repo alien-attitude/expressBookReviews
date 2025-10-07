@@ -21,7 +21,7 @@ public_users.post("/register", (req,res) => {
     }
   }
   // Return error if username or password is missing
-  return res.status(404).json({message: "Unable to register user."});
+  return res.status(401).json({message: "Unable to register user."});
 });
 
 // Get the book list available in the shop
