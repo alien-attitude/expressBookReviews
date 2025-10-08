@@ -62,44 +62,59 @@ public_users.get('/isbn/:isbn', async function (req, res) {
 });
   
 // Get book details based on author
-public_users.get('/author/:author',function (req, res) {
-  const author = req.params.author;
+public_users.get('/author/:author',async function (req, res) {
+  try{
+      const author = req.params.author;
 
-  // Obtain all the keys for the books object
-  const bookKeys = Object.keys(books);
+      // Simulate asynchronous call for fetching book object by keys
+      const getBookKeysByAuthor = async (author) => {
+        return Object.keys(books)
+      }
 
-  // Iterate through the books and filter by author
-  const filtered_books = bookKeys.map(key => {
-    return {isbn: key, ...books[key]}
-  })
-      .filter(book => book.author === author);
+      const bookKeys = await getBookKeysByAuthor(author);
 
-  // Return filtered book or indicate not found
-  if (filtered_books.length > 0) {
-    res.send(filtered_books);
-  } else {
-    res.status(404).json({ message: "Book not found" });
+      // Iterate through the books and filter by author
+      const filtered_books = bookKeys.map(key => {
+        return {isbn: key, ...books[key]}
+      })
+        .filter(book => book.author === author);
+
+      if (filtered_books.length > 0) {
+        res.send(filtered_books);
+      } else {
+        res.status(404).json({ message: "Book not found" });
+      }
+  } catch (error) {
+    res.status(500).json({message: "Error fetching book"});
   }
 });
 
 // Get all books based on title
-public_users.get('/title/:title',function (req, res) {
-  const title = req.params.title;
+public_users.get('/title/:title',async function (req, res) {
+  try {
+    const title = req.params.title;
 
-  // Obtain all the keys for the books object
-  const bookKeys = Object.keys(books);
+    // Simulate asynchronous call for fetching book object by keys
+    const getBookKeysByTitle = async (title) => {
+      return Object.keys(books)
+    }
 
-  // Iterate through the books and filter by title
-  const filtered_books = bookKeys.map(key => {
-    return {isbn: key, ...books[key]}
-  })
-      .filter(book => book.title === title);
+    const bookKeys = await getBookKeysByTitle(title);
 
-  // Return filtered book or indicate not found
-  if (filtered_books.length > 0) {
-    res.send(filtered_books);
-  } else {
-    res.status(404).json({ message: "Book not found" });
+    // Iterate through the books and filter by title
+    const filtered_books = bookKeys.map(key => {
+      return {isbn: key, ...books[key]}
+    })
+        .filter(book => book.title === title);
+
+    // Return filtered book or indicate not found
+    if (filtered_books.length > 0) {
+      res.send(filtered_books);
+    } else {
+      res.status(404).json({ message: "Book not found" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching book" });
   }
 });
 
