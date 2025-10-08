@@ -49,7 +49,9 @@ regd_users.post("/login", (req,res) => {
   if (authenticatedUser(username, password)) {
       //Generate JWT access token
       let accessToken = jwt.sign(
-          {data: password},
+          {
+              username: username,
+              data: password},
           "access",
           {expiresIn: 60* 60});
 
@@ -92,6 +94,32 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
     message: "Review was successfully logged in",
   review: book.reviews
   });
+});
+
+regd_users.delete("/auth/review/:isbn", (req, res) => {
+    const isbn = req.params.isbn;
+    const username = req.user && req.user.username
+
+    if(!username) {
+        return res.status(401).json({message: "User not authenticated"});
+    }
+
+    //Find the book by ISBN
+    const book = books[isbn]
+    if(!book) {
+        return res.status(404).json({message: "Book not found"});
+    }
+
+    //Check if the user's review exists
+    if(book.reviews[username]) {
+        delete book.reviews[username];
+        return res.status(200).json({
+            message: "Review was successfully deleted",
+            review: book.reviews
+        });
+    } else {
+        return res.status(404).json({message: "Review not found"});
+    }
 });
 
 module.exports.authenticated = regd_users;
