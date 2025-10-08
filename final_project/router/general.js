@@ -3,7 +3,6 @@ let books = require("./booksdb.js");
 let isValid = require("./auth_users.js").isValid;
 let users = require("./auth_users.js").users;
 const public_users = express.Router();
-const axios = require('axios');
 
 
 public_users.post("/register", (req,res) => {
@@ -67,7 +66,7 @@ public_users.get('/author/:author',async function (req, res) {
       const author = req.params.author;
 
       // Simulate asynchronous call for fetching book object by keys
-      const getBookKeysByAuthor = async (author) => {
+      const getBookKeysByAuthor = async (books) => {
         return Object.keys(books)
       }
 
@@ -95,7 +94,7 @@ public_users.get('/title/:title',async function (req, res) {
     const title = req.params.title;
 
     // Simulate asynchronous call for fetching book object by keys
-    const getBookKeysByTitle = async (title) => {
+    const getBookKeysByTitle = async (books) => {
       return Object.keys(books)
     }
 
